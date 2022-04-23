@@ -1,13 +1,20 @@
-import { Button } from './components/Button';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { NewRoom } from './pages/NewRoom';
+import { AuthContextProvider } from './contexts/AuthContext';
+
+import '../src/styles/global.scss';
 
 function App() {
 	return (
-		<div>
-			<Button>Clique Aqui </Button>
-			<Button />
-			<Button />
-			<Button />
-		</div>
+		<BrowserRouter>
+			<AuthContextProvider>
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/rooms/new" element={<NewRoom />} />
+				</Routes>
+			</AuthContextProvider>
+		</BrowserRouter>
 	);
 }
 
