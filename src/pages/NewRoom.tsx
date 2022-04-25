@@ -13,6 +13,8 @@ export function NewRoom() {
 	const navigate = useNavigate();
 	const [newRoom, setNewRoom] = useState('');
 
+	//QUANDO CRIAR UMA NOVA SALA ESSE SERÁ O ADMIN
+
 	async function handleCreateRoom(event: FormEvent) {
 		event.preventDefault();
 
@@ -27,7 +29,7 @@ export function NewRoom() {
 			authorId: user?.id,
 		});
 
-		navigate(`/rooms/${firebaseRoom.key}`);
+		navigate(`/admin/rooms/${firebaseRoom.key}`);
 	}
 
 	return (
