@@ -13,15 +13,11 @@ export function NewRoom() {
 	const navigate = useNavigate();
 	const [newRoom, setNewRoom] = useState('');
 
-	//QUANDO CRIAR UMA NOVA SALA ESSE SERÁ O ADMIN
-
 	async function handleCreateRoom(event: FormEvent) {
 		event.preventDefault();
-
 		if (newRoom.trim() === '') {
 			return;
 		}
-
 		const roomRef = database.ref('rooms');
 
 		const firebaseRoom = await roomRef.push({

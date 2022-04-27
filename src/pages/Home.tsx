@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button/Button';
 import { useAuth } from '../hooks/useAuth';
 import { database } from '../services/firebase';
+import toast, { Toaster } from 'react-hot-toast';
 import illustrationImg from '../assets/images/illustration.svg';
 import logoImg from '../assets/images/logo.svg';
 import googleIconImg from '../assets/images/google-icon.svg';
@@ -13,12 +14,12 @@ export function Home() {
 	const { user, signInWithGoogle } = useAuth();
 	const [roomCode, setRoomCode] = useState('');
 
-	async function handleCreateRoom() {
+	const handleCreateRoom = async () => {
 		if (!user) {
 			await signInWithGoogle();
 		}
 		navigate('/rooms/new');
-	}
+	};
 
 	async function handleJoinRoom(event: FormEvent) {
 		event.preventDefault();
@@ -30,12 +31,14 @@ export function Home() {
 		const roomRef = await database.ref(`rooms/${roomCode}`).get();
 
 		if (!roomRef.exists()) {
-			alert('Room does not exists.');
+			toast.error('Esta sala não existe no momento');
+			setRoomCode('');
 			return;
 		}
 
 		if (roomRef.val().endedAt) {
-			alert('Room already closed.');
+			//alert('Room already closed.');
+			toast.success('A sala foi encerrada!');
 			return;
 		}
 
@@ -44,6 +47,9 @@ export function Home() {
 
 	return (
 		<div id="page-auth">
+			<div>
+				<Toaster position="bottom-right" reverseOrder={false} />
+			</div>
 			<aside>
 				<img
 					src={illustrationImg}

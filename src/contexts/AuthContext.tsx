@@ -7,9 +7,15 @@ type User = {
 	avatar: string;
 };
 
+type LoadingProps = {
+	loading: boolean;
+};
+
 type AuthContextType = {
 	user: User | undefined;
 	signInWithGoogle: () => Promise<void>;
+	singOutGoogleAccount: () => Promise<void>;
+	loading: LoadingProps | undefined;
 };
 
 type AuthContextProviderProps = {
@@ -20,6 +26,7 @@ export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthContextProvider(props: AuthContextProviderProps) {
 	const [user, setUser] = useState<User>();
+	const [loading, setLoading] = useState<LoadingProps>();
 
 	useEffect(() => {
 		const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -43,7 +50,8 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 		};
 	}, []);
 
-	async function signInWithGoogle() {
+	const signInWithGoogle = async () => {
+		setLoading({ loading: true });
 		const provider = new firebase.auth.GoogleAuthProvider();
 
 		const result = await auth.signInWithPopup(provider);
@@ -60,11 +68,25 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 				name: displayName,
 				avatar: photoURL,
 			});
+			setTimeout(() => {
+				setLoading({ loading: false });
+			}, 3000);
 		}
-	}
+	};
+
+	const singOutGoogleAccount = async () => {
+		setLoading({ loading: true });
+
+		setTimeout(() => {
+			auth.signOut();
+			setLoading({ loading: false });
+		}, 3000);
+	};
 
 	return (
-		<AuthContext.Provider value={{ user, signInWithGoogle }}>
+		<AuthContext.Provider
+			value={{ user, signInWithGoogle, singOutGoogleAccount, loading }}
+		>
 			{props.children}
 		</AuthContext.Provider>
 	);

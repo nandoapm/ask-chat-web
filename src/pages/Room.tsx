@@ -1,12 +1,13 @@
 import { FormEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import logoImg from '../assets/images/logo.svg';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button/Button';
 import { Question } from '../components/Question/Question';
 import { RoomCode } from '../components/RoomCode/RoomCode';
 import { useAuth } from '../hooks/useAuth';
 import { useRoom } from '../hooks/useRoom';
 import { database } from '../services/firebase';
+import logoImg from '../assets/images/logo.svg';
 
 import '../styles/room.scss';
 
@@ -15,15 +16,15 @@ type RoomParams = {
 };
 
 export function Room() {
-	const { user } = useAuth();
+	const navigate = useNavigate(); //v5 useHistory / v6 useNavigate
+	const { user, singOutGoogleAccount } = useAuth();
 	const params = useParams<RoomParams>();
 	const [newQuestion, setNewQuestion] = useState('');
 	const roomId = params.id;
 	const { title, questions } = useRoom(roomId);
 
-	async function handleSendQuestion(event: FormEvent) {
+	const handleSendQuestion = async (event: FormEvent) => {
 		event.preventDefault();
-
 		if (newQuestion.trim() === '') {
 			return;
 		}
@@ -45,12 +46,12 @@ export function Room() {
 		await database.ref(`rooms/${roomId}/questions`).push(question);
 
 		setNewQuestion('');
-	}
+	};
 
-	async function handleLikeQuestion(
+	const handleLikeQuestion = async (
 		questionId: string,
 		likeId: string | undefined
-	) {
+	) => {
 		if (likeId) {
 			await database
 				.ref(`rooms/${roomId}/questions/${questionId}/likes/${likeId}`)
@@ -60,7 +61,12 @@ export function Room() {
 				authorId: user?.id,
 			});
 		}
-	}
+	};
+
+	const handleLogout = async () => {
+		await singOutGoogleAccount();
+		navigate('/');
+	};
 
 	return (
 		<div id="page-room">
@@ -69,8 +75,8 @@ export function Room() {
 					<img src={logoImg} alt="AskChat" />
 					<RoomCode code={roomId} />
 				</div>
+				<button onClick={handleLogout}>Sair</button>
 			</header>
-
 			<main>
 				<div className="room-title">
 					<h1>Convidado - {title}</h1>
