@@ -47,9 +47,7 @@ export function Home() {
 
 	return (
 		<div id="page-auth">
-			<div>
-				<Toaster position="bottom-right" reverseOrder={false} />
-			</div>
+			<Toaster position="bottom-right" reverseOrder={false} />
 			<aside>
 				<img
 					src={illustrationImg}

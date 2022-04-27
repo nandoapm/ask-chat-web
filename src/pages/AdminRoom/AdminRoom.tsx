@@ -6,6 +6,7 @@ import { RoomCode } from '../../components/RoomCode/RoomCode';
 import { useRoom } from '../../hooks/useRoom';
 import { database } from '../../services/firebase';
 import { useAuth } from '../../hooks/useAuth';
+import toast, { Toaster } from 'react-hot-toast';
 import { Loading } from '../../components/Loading/Loading';
 import logoImg from '../../assets/images/logo.svg';
 import deleteImg from '../../assets/images/delete.svg';
@@ -56,12 +57,14 @@ export function AdminRoom() {
 		await database.ref(`rooms/${roomId}/questions/${questionId}`).update({
 			isAnswered: true,
 		});
+		toast.success('Pergunta respondida!');
 	}
 
 	async function handleHighlightQuestion(questionId: string) {
 		await database.ref(`rooms/${roomId}/questions/${questionId}`).update({
 			isHighlighted: true,
 		});
+		toast.success('Pergunta sendo verificada!');
 	}
 
 	async function handleEndRoom() {
@@ -78,6 +81,7 @@ export function AdminRoom() {
 	async function handleDeleteQuestion(questionId: string) {
 		if (window.confirm('Tem certeza que você deseja excluir esta pergunta?')) {
 			await database.ref(`rooms/${roomId}/questions/${questionId}`).remove();
+			toast.error('Pergunta deletada!');
 		}
 	}
 
@@ -89,8 +93,10 @@ export function AdminRoom() {
 			navigate('/');
 		}, 5000);
 	}
+
 	return (
 		<div id="page-room">
+			<Toaster position="bottom-right" reverseOrder={false} />
 			<header>
 				<div className="content">
 					<img src={logoImg} alt="AskChat" />
