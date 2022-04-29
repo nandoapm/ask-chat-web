@@ -12,7 +12,7 @@ Clone o projeto e acesse a pasta do mesmo.
 
 ```bash
 $ git clone https://github.com/nandoapm/ask-chat-web.git
-$ cd nlw-06-reactjs
+$ cd ask-chat-web
 ```
 
 Para iniciá-lo, siga os passos abaixo:
